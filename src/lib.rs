@@ -47,22 +47,33 @@ pub async fn main(req: Request, env: Env) -> Result<Response> {
     // functionality and a `RouteContext` which you can use to  and get route parameters and
     // Environment bindings like KV Stores, Durable Objects, Secrets, and Variables.
     router
-        .get_async("/", |_, ctx| async move {
-            if let Ok(static_store) = ctx.kv("STATIC") {
-                match static_store.get("index.html").await {
-                    Ok(result) => match result {
-                        Some(file) =>  return Response::from_html(file.as_string()),
-                        None => {
-                            log_not_present_error(&String::from("STATIC"), &String::from("index.html"));
-                            return Response::error("File Not Found", 404);
-                        }
-                    },
-                    Err(_) => {
-                        return Response::error("Internal Service Error", 500); // Unable to reach KV store
+        .get_async("/*path", |_, ctx| async move {
+            if let Some(path) = ctx.param("path") {
+                if let Ok(static_store) = ctx.kv("STATIC") {
+                    let mut path: String = path.clone();
+                    // Default to index.html if the page is not specified within the directory
+                    if path.ends_with("/") {
+                        path.push_str("index.html");
                     }
+                    // Remove leading /
+                    let path = path.strip_prefix('/').unwrap_or(&path);
+                    match static_store.get(&path).await {
+                        Ok(result) => match result {
+                            Some(file) =>  return Response::from_html(file.as_string()),
+                            None => {
+                                log_not_present_error(&String::from("STATIC"), &String::from(path));
+                                return Response::error("Not Found", 404);
+                            }
+                        },
+                        Err(_) => {
+                            return Response::error("Internal Service Error", 500); // Unable to reach KV store
+                        }
+                    }
+                } else {
+                    return Response::error("Internal Server Error", 500); // KV store doesn't exist
                 }
             } else {
-                return Response::error("Internal Server Error", 500); // KV store doesn't exist
+                return Response::error("Bad Request", 400);
             }
         })
         .run(req, env)
