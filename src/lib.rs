@@ -13,6 +13,24 @@ fn log_request(req: &Request) {
     );
 }
 
+fn log_bad_format_error(kv: &String, key: &String) {
+    console_log!(
+        "{} - [{}], problem interpreting key \"{}\" as file",
+        Date::now().to_string(),
+        kv,
+        key
+    );
+}
+
+fn log_not_present_error(kv: &String, key: &String) {
+    console_log!(
+        "{} - [{}], key \"{}\" not present in store",
+        Date::now().to_string(),
+        kv,
+        key
+    );
+}
+
 #[event(fetch)]
 pub async fn main(req: Request, env: Env) -> Result<Response> {
     log_request(&req);
@@ -29,26 +47,23 @@ pub async fn main(req: Request, env: Env) -> Result<Response> {
     // functionality and a `RouteContext` which you can use to  and get route parameters and
     // Environment bindings like KV Stores, Durable Objects, Secrets, and Variables.
     router
-        .get("/", |_, _| Response::ok("Hello from Workers!"))
-        .post_async("/form/:field", |mut req, ctx| async move {
-            if let Some(name) = ctx.param("field") {
-                let form = req.form_data().await?;
-                match form.get(name) {
-                    Some(FormEntry::Field(value)) => {
-                        return Response::from_json(&json!({ name: value }))
+        .get_async("/", |_, ctx| async move {
+            if let Ok(static_store) = ctx.kv("STATIC") {
+                match static_store.get("index.html").await {
+                    Ok(result) => match result {
+                        Some(file) =>  return Response::from_html(file.as_string()),
+                        None => {
+                            log_not_present_error(&String::from("STATIC"), &String::from("index.html"));
+                            return Response::error("File Not Found", 404);
+                        }
+                    },
+                    Err(_) => {
+                        return Response::error("Internal Service Error", 500); // Unable to reach KV store
                     }
-                    Some(FormEntry::File(_)) => {
-                        return Response::error("`field` param in form shouldn't be a File", 422);
-                    }
-                    None => return Response::error("Bad Request", 400),
                 }
+            } else {
+                return Response::error("Internal Server Error", 500); // KV store doesn't exist
             }
-
-            Response::error("Bad Request", 400)
-        })
-        .get("/worker-version", |_, ctx| {
-            let version = ctx.var("WORKERS_RS_VERSION")?.to_string();
-            Response::ok(version)
         })
         .run(req, env)
         .await
