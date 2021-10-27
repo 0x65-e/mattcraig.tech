@@ -7,7 +7,7 @@ foreach ($File in Get-ChildItem -File -Recurse -Path $BaseDir) {
 	Write-Host -NoNewline "$SubPath : "
 	# This will fail if the file is empty
 	if ($File.length) {
-		wrangler kv:key put $SubPath --namespace-id=59ecddf3e5ed4a85bef94a74f6a06272 (Get-Content -Raw $File.FullName)
+		wrangler kv:key put $SubPath --namespace-id=59ecddf3e5ed4a85bef94a74f6a06272 --path $File.FullName
 	} else {
 		Write-Host "File length is 0. Skipping."
 	}
