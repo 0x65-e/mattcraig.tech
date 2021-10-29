@@ -1568,6 +1568,7 @@ checksum = "31cfc429bbf773f52282c32c240342a21495ce9fa1e3721998295d2027969f6a"
 name = "mattcraig-tech"
 version = "0.1.0"
 dependencies = [
+ "base64 0.13.0",
  "cfg-if 0.1.10",
  "console_error_panic_hook",
  "kv-assets",
