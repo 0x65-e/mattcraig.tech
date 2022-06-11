@@ -1,5 +1,6 @@
 use std::path::*;
 use std::borrow::Borrow;
+use base64::*;
 use worker::*;
 
 mod utils;
@@ -14,12 +15,13 @@ fn log_request(req: &Request) {
     );
 }
 
-fn log_bad_format_error(kv: &str, key: &str) {
+fn log_bad_format_error(kv: &str, key: &str, error: &str) {
     console_log!(
-        "{} - [{}], problem interpreting key \"{}\" as base64 encoded file",
+        "{} - [{}], problem interpreting key \"{}\" as base64 encoded file: {}",
         Date::now().to_string(),
         kv,
-        key
+        key,
+        error
     );
 }
 
@@ -99,8 +101,8 @@ pub async fn main(req: Request, env: Env) -> Result<Response> {
                                             // Decode binary file formats into raw bytes
                                             match base64::decode(file.as_string()) {
                                                 Ok(bytes) => return Ok(Response::from_bytes(bytes)?.with_headers(headers)),
-                                                Err(_) => {
-                                                    log_bad_format_error("STATIC", path);
+                                                Err(e) => {
+                                                    log_bad_format_error("STATIC", path, &e.to_string());
                                                     return Response::error("Not Found", 404);
                                                 }
                                             }
