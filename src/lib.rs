@@ -44,7 +44,7 @@ fn log_invalid_filename(key: &str) {
 }
 
 #[event(fetch)]
-pub async fn main(req: Request, env: Env) -> Result<Response> {
+pub async fn main(req: Request, env: Env, _ctx: worker::Context) -> Result<Response> {
     log_request(&req);
 
     // Optionally, get more helpful error messages written to the console in the case of a panic.
@@ -94,29 +94,35 @@ pub async fn main(req: Request, env: Env) -> Result<Response> {
                     };
                     match path.to_str() {
                         Some(path) => {
-                            match static_store.get(path).await {
-                                Ok(result) => match result {
-                                    Some(file) => {
-                                        if base64encoded { 
-                                            // Decode binary file formats into raw bytes
-                                            match base64::decode(file.as_string()) {
-                                                Ok(bytes) => return Ok(Response::from_bytes(bytes)?.with_headers(headers)),
-                                                Err(e) => {
-                                                    log_bad_format_error("STATIC", path, &e.to_string());
-                                                    return Response::error("Not Found", 404);
-                                                }
-                                            }
-                                        } else { 
-                                            return Ok(Response::from_bytes(file.as_bytes().to_vec())?.with_headers(headers));
-                                        };
-                                        
+                            let result = static_store.get(path);
+                            if base64encoded {
+                                match result.text().await {
+                                    Ok(file) => match file {
+                                        Some(bstring) => match base64::decode(bstring) {
+                                            Ok(bytes) => return Ok(Response::from_bytes(bytes)?.with_headers(headers)),
+                                            Err(e) => {
+                                                log_bad_format_error("STATIC", path, &e.to_string());
+                                                return Response::error("Not Found", 404);
+                                            },
+                                        },
+                                        None => {
+                                            log_not_present_error("STATIC", path);
+                                            return Response::error("Not Found", 404);
+                                        },
                                     },
-                                    None => {
-                                        log_not_present_error("STATIC", path);
-                                        return Response::error("Not Found", 404);
-                                    }
-                                },
-                                Err(_) => return Response::error("Internal Server Error", 500), // Unable to reach KV store
+                                    Err(e) => return Response::error("Internal Server Error", 500), //TODO: Distinguish between different types of KvError
+                                }
+                            } else {
+                                match result.bytes().await {
+                                    Ok(bytes) => match bytes {
+                                        Some(bytes) => return Ok(Response::from_bytes(bytes)?.with_headers(headers)),
+                                        None => {
+                                            log_not_present_error("STATIC", path);
+                                            return Response::error("Not Found", 404);
+                                        },
+                                    },
+                                    Err(e) => return Response::error("Internal Server Error", 500), //TODO: Distinguish between different types of KvError
+                                }
                             }
                         },
                         None => { 
