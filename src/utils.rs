@@ -51,3 +51,12 @@ pub fn log_invalid_filename(key: &str) {
         key
     );
 }
+
+pub fn log_generic_error(key: &str, err: &str) {
+    console_log!(
+        "{} - [{}], received generic worker error: {}",
+        Date::now().to_string(),
+        key,
+        err
+    )
+}

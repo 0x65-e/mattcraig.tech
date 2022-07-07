@@ -1,8 +1,58 @@
-use std::path::*;
+use std::path::{PathBuf, Path};
 use std::borrow::Borrow;
 use worker::*;
+use crate::kv::{KvStore, GetOptionsBuilder};
 
 mod utils;
+
+async fn retrieve_file_from_static_store(path: &str, env: &Env) -> Result<Response> {
+    let static_store: KvStore = env.kv("STATIC")?;
+
+    let mut pathbuf: PathBuf = PathBuf::from(String::from(path));
+    // Default to index.html if the page is not specified within the directory
+    if pathbuf.ends_with("/") {
+        pathbuf.push("index.html"); // TODO: this isn't working 100% - see /resume/ for an example
+    }
+    // Default to .html if there is no extension
+    if pathbuf.extension() == None {
+        pathbuf.set_extension("html");
+    }
+    // Remove leading slash to index into kv store
+    let path : &Path = pathbuf.strip_prefix("/").unwrap_or(pathbuf.as_path());
+
+    // Set Content-Type header based on file extension (naive)
+    let mut headers : Headers = Headers::new();
+    let content_type: &str = match path.extension().unwrap().to_str() { // use unwrap() since we checked for extension() == None in the PathBuf
+        Some("html") => "text/html",
+        Some("css") => "text/css",
+        Some("js") => "text/javascript",
+        Some("json") => "application/json",
+        Some("svg") => "image/svg+xml",
+        Some("jpg") => "image/jpeg",
+        Some("woff") => "font/woff",
+        Some("woff2") => "font/woff2",
+        Some("ttf") => "font/ttf",
+        Some(_) => "text/plain", // Default to plain text for any other extension
+        None => {
+            utils::log_invalid_filename(path.to_string_lossy().borrow());
+            return Response::error("Bad Request", 400); // Non-Unicode characters are not supported in filename keys
+        },
+    };
+    headers.set("Content-Type", content_type)?; // Content-Type is always a valid header, so ? should never panic
+
+    if path.to_str() == None {
+        utils::log_invalid_filename(path.to_string_lossy().borrow());
+        return Response::error("Bad Request", 400); // Non-Unicode characters are not supported in filename keys
+    }
+    let result: GetOptionsBuilder = static_store.get(path.to_str().unwrap());
+    return match result.bytes().await? {
+        Some(bytes) => Ok(Response::from_bytes(bytes)?.with_headers(headers)),
+        None => {
+            utils::log_not_present_error("STATIC", path.to_str().unwrap());
+            Response::error("Not Found", 404)
+        }
+    };
+}
 
 #[event(fetch)]
 pub async fn main(req: Request, env: Env, _ctx: worker::Context) -> Result<Response> {
@@ -22,60 +72,16 @@ pub async fn main(req: Request, env: Env, _ctx: worker::Context) -> Result<Respo
     router
         .get_async("/*path", |_, ctx| async move {
             if let Some(path) = ctx.param("path") {
-                if let Ok(static_store) = ctx.kv("STATIC") {
-                    let mut pathbuf: PathBuf = PathBuf::from(String::from(path));
-                    // Default to index.html if the page is not specified within the directory
-                    if pathbuf.ends_with("/") {
-                        pathbuf.push("index.html");
+                return match retrieve_file_from_static_store(path, &ctx.env).await {
+                    Ok(response) => Ok(response),
+                    Err(e) => {
+                        utils::log_generic_error(path, &e.to_string());
+                        // Generic error message
+                        Response::error("Internal Server Error", 500)
                     }
-                    // Add .html if there is no extension
-                    if pathbuf.extension() == None {
-                        pathbuf.push(".html");
-                    }
-                    // Remove leading /
-                    let path : &Path = pathbuf.strip_prefix("/").unwrap_or(pathbuf.as_path()); // may need & on pathbuf?
-                    // Set Content-Type header based on file extension (naive)
-                    let mut headers : Headers = Headers::new();
-                    let content_type = match path.extension().unwrap().to_str() { // use unwrap() since we checked for extension() == None in the PathBuf
-                        Some("html") => "text/html",
-                        Some("css") => "text/css",
-                        Some("js") => "text/javascript",
-                        Some("json") => "application/json",
-                        Some("svg") => "image/svg+xml",
-                        Some("jpg") => "image/jpeg",
-                        Some("woff") => "font/woff",
-                        Some("woff2") => "font/woff2",
-                        Some("ttf") => "font/ttf",
-                        Some(_) => "text/plain", // Default to plain text for any other extension
-                        None => {
-                            utils::log_invalid_filename(path.to_string_lossy().borrow());
-                            return Response::error("Bad Request", 400); // Non-Unicode characters are not supported
-                        },
-                    };
-                    headers.set("Content-Type", content_type)?; // Fine to use ? here since Content-Type is always a valid header
-                    match path.to_str() {
-                        Some(path) => {
-                            let result = static_store.get(path);
-                            match result.bytes().await {
-                                Ok(bytes) => match bytes {
-                                    Some(bytes) => return Ok(Response::from_bytes(bytes)?.with_headers(headers)),
-                                    None => {
-                                        utils::log_not_present_error("STATIC", path);
-                                        return Response::error("Not Found", 404);
-                                    },
-                                },
-                                Err(e) => return Response::error("Internal Server Error", 500), //TODO: Distinguish between different types of KvError
-                            }
-                        },
-                        None => { 
-                            utils::log_invalid_filename(path.to_string_lossy().borrow());
-                            return Response::error("Bad Request", 400); // Non-Unicode characters are not supported
-                        }
-                    }
-                } else {
-                    return Response::error("Internal Server Error", 500); // KV store doesn't exist
-                }
+                };
             } else {
+                // No path parameter - bad client request
                 return Response::error("Bad Request", 400);
             }
         })
