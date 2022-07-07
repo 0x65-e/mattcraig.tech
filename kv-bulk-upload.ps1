@@ -18,14 +18,14 @@ Add-Content -Path $OutFile -Value "["
 $PrefixSize = $BaseDir.FullName.Length
 # Get every file in the base directory
 foreach ($File in Get-ChildItem -File -Recurse -Path $BaseDir) { 
-	$SubPath = $File.FullName.substring($PrefixSize)
+	$SubPath = $File.FullName.substring($PrefixSize).Replace('\','/')
 	$IsBinary = $BinaryExtensions.Contains($File.Extension)
 	Write-Host "- $SubPath"
 	# This will fail if the file is empty
 	if ($File.length) {
 		if ($IsBinary) {
 			Write-Host "Binary data file. Uploading in bulk."
-			Add-Content -Path $OutFile -Value "`t{`n`t`t`"key`": `"$($SubPath.Replace('\','/'))`","
+			Add-Content -Path $OutFile -Value "`t{`n`t`t`"key`": `"$SubPath`","
 			$EncodedContents = [convert]::ToBase64String((Get-Content -Path $File.FullName -Encoding byte))
 			Add-Content -Path $OutFile -Value "`t`t`"value`": `"$EncodedContents`",`n`t`t`"base64`": true`n`t},"
 		} else {
