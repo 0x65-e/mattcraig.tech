@@ -4,47 +4,9 @@ use worker::*;
 
 mod utils;
 
-fn log_request(req: &Request) {
-    console_log!(
-        "{} - [{}], located at: {:?}, within: {}",
-        Date::now().to_string(),
-        req.path(),
-        req.cf().coordinates().unwrap_or_default(),
-        req.cf().region().unwrap_or("unknown region".into())
-    );
-}
-
-fn log_bad_format_error(kv: &str, key: &str, error: &str) {
-    console_log!(
-        "{} - [{}], problem interpreting key \"{}\" as base64 encoded file: {}",
-        Date::now().to_string(),
-        kv,
-        key,
-        error
-    );
-}
-
-fn log_not_present_error(kv: &str, key: &str) {
-    console_log!(
-        "{} - [{}], key \"{}\" not present in store",
-        Date::now().to_string(),
-        kv,
-        key
-    );
-}
-
-fn log_invalid_filename(key: &str) {
-    console_log!(
-        "{} - [{}], requested page \"{}\" uses non-UTF-8 characters",
-        Date::now().to_string(),
-        key,
-        key
-    );
-}
-
 #[event(fetch)]
 pub async fn main(req: Request, env: Env, _ctx: worker::Context) -> Result<Response> {
-    log_request(&req);
+    utils::log_request(&req);
 
     // Optionally, get more helpful error messages written to the console in the case of a panic.
     utils::set_panic_hook();
@@ -76,7 +38,7 @@ pub async fn main(req: Request, env: Env, _ctx: worker::Context) -> Result<Respo
                     let mut headers : Headers = Headers::new();
                     let content_type = match path.extension().unwrap().to_str() { // use unwrap() since we checked for extension() == None in the PathBuf
                         Some("html") => "text/html",
-                        Some("css") => "text/css"?,
+                        Some("css") => "text/css",
                         Some("js") => "text/javascript",
                         Some("json") => "application/json",
                         Some("svg") => "image/svg+xml",
@@ -86,7 +48,7 @@ pub async fn main(req: Request, env: Env, _ctx: worker::Context) -> Result<Respo
                         Some("ttf") => "font/ttf",
                         Some(_) => "text/plain", // Default to plain text for any other extension
                         None => {
-                            log_invalid_filename(path.to_string_lossy().borrow());
+                            utils::log_invalid_filename(path.to_string_lossy().borrow());
                             return Response::error("Bad Request", 400); // Non-Unicode characters are not supported
                         },
                     };
@@ -98,7 +60,7 @@ pub async fn main(req: Request, env: Env, _ctx: worker::Context) -> Result<Respo
                                 Ok(bytes) => match bytes {
                                     Some(bytes) => return Ok(Response::from_bytes(bytes)?.with_headers(headers)),
                                     None => {
-                                        log_not_present_error("STATIC", path);
+                                        utils::log_not_present_error("STATIC", path);
                                         return Response::error("Not Found", 404);
                                     },
                                 },
@@ -106,7 +68,7 @@ pub async fn main(req: Request, env: Env, _ctx: worker::Context) -> Result<Respo
                             }
                         },
                         None => { 
-                            log_invalid_filename(path.to_string_lossy().borrow());
+                            utils::log_invalid_filename(path.to_string_lossy().borrow());
                             return Response::error("Bad Request", 400); // Non-Unicode characters are not supported
                         }
                     }
