@@ -24,16 +24,6 @@ pub fn log_request(req: &Request) {
     );
 }
 
-pub fn log_bad_format_error(kv: &str, key: &str, error: &str) {
-    console_log!(
-        "{} - [{}], problem interpreting key \"{}\" as base64 encoded file: {}",
-        Date::now().to_string(),
-        kv,
-        key,
-        error
-    );
-}
-
 pub fn log_not_present_error(kv: &str, key: &str) {
     console_log!(
         "{} - [{}], key \"{}\" not present in store",
