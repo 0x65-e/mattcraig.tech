@@ -1,6 +1,6 @@
 # About
 
-This website is written for Cloudflare Workers using Rust and the (workers-rs)[https://github.com/cloudflare/workers-rs] crate.
+This website is written for Cloudflare Workers using Rust and the [workers-rs](https://github.com/cloudflare/workers-rs) crate.
 
 It serves static files stored in Workers KV.
 
