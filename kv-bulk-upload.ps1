@@ -12,7 +12,7 @@ if (Test-Path $OutFile) {
 	Remove-Item $OutFile
 }
 
-$BinaryExtensions = ".jpg",".ttf",".woff",".woff2",".eot"
+$BinaryExtensions = ".jpg",".png",".gif",".webp",".ttf",".woff",".woff2",".eot",".pdf"
 Write-Host "Uploading files from directory $BaseDir"
 Add-Content -Path $OutFile -Value "["
 $PrefixSize = $BaseDir.FullName.Length
@@ -33,7 +33,7 @@ foreach ($File in Get-ChildItem -File -Recurse -Path $BaseDir) {
 			if ($Preview.IsPresent) {
 				wrangler kv:key put $SubPath --binding $Binding --path $File.FullName --preview
 			} else {
-				wrangler kv:key put $SubPath --binding $Binding --path $File.FullName
+				wrangler kv:key put $SubPath --binding $Binding --path $File.FullName --preview false
 			}
 		}
 	} else {
@@ -48,5 +48,5 @@ Write-Host "Uploading bulk binary files:"
 if ($Preview.IsPresent) {
 	wrangler kv:bulk put $OutFile --binding $Binding --preview
 } else {
-	wrangler kv:bulk put $OutFile --binding $Binding
+	wrangler kv:bulk put $OutFile --binding $Binding --preview false
 }

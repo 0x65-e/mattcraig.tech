@@ -29,9 +29,23 @@ async fn retrieve_file_from_static_store(path: &str, env: &Env) -> Result<Respon
         Some("json") => "application/json",
         Some("svg") => "image/svg+xml",
         Some("jpg") => "image/jpeg",
+        Some("jpeg") => "image/jpeg",
+        Some("png") => "image/png",
+        Some("gif") => "image/gif",
+        Some("webp") => "image/webp",
+        Some("wav") => "audio/wav",
+        Some("mp3") => "audio/mpeg",
+        Some("mpeg") => "audio/mpeg",
+        Some("mp4") => "video/mp4",
         Some("woff") => "font/woff",
         Some("woff2") => "font/woff2",
         Some("ttf") => "font/ttf",
+        Some("otf") => "font/otf",
+        Some("csv") => "text/csv",
+        Some("txt") => "text/plain",
+        Some("pdf") => "application/pdf",
+        Some("zip") => "application/zip",
+        Some("7z") => "application/x-7z-compressed",
         Some(_) => "text/plain", // Default to plain text for any other extension
         None => {
             utils::log_invalid_filename(path.to_string_lossy().borrow());
