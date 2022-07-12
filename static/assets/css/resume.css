@@ -48,7 +48,6 @@ h5 {
 
 hr {
 	background-color: #253447;
-	height: 20px;
 }
 
 p {
@@ -78,6 +77,15 @@ li.github {
 
 a {
 	color: #253447;
+}
+
+.hover-link {
+	text-decoration: none;
+}
+
+.hover-link:hover {
+	text-decoration: underline;
+	text-decoration-style: dotted;
 }
 
 .content {
