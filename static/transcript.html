@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Transcipt</title>
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Roboto+Condensed&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="https://use.typekit.net/tzs5cir.css">
+	<link rel="stylesheet" href="assets/css/resume.css">
+    <style>
+        .course-listing {
+            display: table-row;
+        }
+
+        .course-title {
+            margin-top: 0;
+        }
+
+        .course-section-header {
+            text-align: center;
+            margin-top: 2em;
+        }
+    </style>
+    <script type="text/javascript" src="assets/js/mustache.js"></script>
+    <!-- Templates -->
+    <script type="text/javascript">
+        function render_listing() {
+            return mustache.render(
+                `<hr style="height: 1px;">
+                <div class="course-listing">
+                    <div class="left-column">
+                        <h3 class="course-title">{{title}}</h3>
+                        <h4>{{number}}</h4>
+                        <h5>{{quarter}}</h5>
+                    </div>
+                    <div class="right-column">
+                        <ul>
+                            {{#description}}
+                            <li><p>{{.}}<p></li>
+                            {{/description}}
+                        </ul>
+                    </div>
+                </div>`, this);
+        }
+
+        function render_classes(classes) {
+            classes.render_listing = render_listing;
+            console.log(classes);
+            document.write(mustache.render("{{#classes}}{{&render_listing}}{{/classes}}", classes));
+        }
+    </script>
+</head>
+<body>
+    <div class="navbar">
+        <a href="#CS"><p>CS</p></a>
+        <a href="#Data"><p>Data Sci</p></a>
+        <a href="#Math"><p>Math</p></a>
+        <a href="#Econ"><p>Econ</p></a>
+        <a href="/resume"><p>&lt;- Back</p></a>
+    </div>
+    <div class="content">
+        <h1 style="text-align: center">Transcript</h1>
+        <h2 id="CS" class="course-section-header">Computer Science Courses</h2>
+        <script>
+            render_classes({
+                classes: [
+                    {
+                        title: "Computer Science I",
+                        number: "CS 31",
+                        quarter: "Fall 2019",
+                        description: ["Data types, operators, and control structures", "Functions and recursion", "Object-oriented programming in C++"],
+                    },
+                    {
+                        title: "Data Structures",
+                        number: "CS 32",
+                        quarter: "Winter 2020",
+                        description: ["Object-oriented programming", "Overloading, inheritance, and polymorphism", "Data structures - stacks, queues, lists, trees, graphs"],
+                    },
+                    {
+                        title: "Computer Organization",
+                        number: "CS 33",
+                        quarter: "Spring 2020",
+                        description: ["Procedure calls, stacks, interrupts, and traps", "Assembling, linking, and loading", "Processes, I/O, memory management"],
+                    },
+                    {
+                        title: "Software Construction",
+                        number: "CS 35L",
+                        quarter: "Spring 2020",
+                        description: ["Software development tools - version control, package management, build tools, Linux command line", "Collaborative student web development project"]
+                    },
+                    {
+                        title: "Operating Systems",
+                        number: "CS 111",
+                        quarter: "Fall 2020",
+                        description: ["Operating system kernels, bootstrapping, and I/O", "Processes and threads, scheduling, and synchronization; memory management and virtual memory", "File systems robustness and performance; distributed systems"]
+                    },
+                    {
+                        title: "Programming Languages",
+                        number: "CS 131",
+                        quarter: "Spring 2021",
+                        description: ["Programming paradigms - imperative, functional, logical, object-oriented", "Types, declarations, syntax, and semantics of programming languages"]
+                    },
+                    {
+                        title: "Algorithms",
+                        number: "CS 180",
+                        quarter: "Fall 2021",
+                        description: ["Divide-and-conquer, greedy methods, and dynamic programming", "Complexity - time, space, upper, lower bounds, asymptotic complexity; NP-completeness"]
+                    },
+                    {
+                        title: "Computer Architecture",
+                        number: "CS M151B",
+                        quarter: "Fall 2021",
+                        description: ["CPU datapath and control; instruction set design; pipelining; performance evaluation", "Memory hierarcy, organization, management, and caching"]
+                    },
+                    {
+                        title: "Secure Computer Systems",
+                        number: "ECE 188",
+                        quarter: "Fall 2021",
+                        description: ["Hardware security - cryptographic primitives, attestation, trusted execution, hardware Trojans", "Machine learning security and privacy - adversarial attacks, poisoning attacks, model theft, privacy-preserving computation"]
+                    },
+                    {
+                        title: "Computer Networks",
+                        number: "CS 188",
+                        quarter: "Fall 2021",
+                        description: ["Networking protocols; Internet architecture", "Routing algorithms and protocols", "Link layer protocols - Ethernet, wireless channels"]
+                    }
+                ]
+            });
+        </script>
+        <h2 id="Data" class="course-section-header">Data Science Courses</h2>
+        <script>
+            render_classes({
+                classes: [
+                    {
+                        title: "Probability and Statistics",
+                        number: "MATH 170E",
+                        quarter: "Fall 2021",
+                        description: ["Discrete and continuous distributions - uniform, binomial, Poisson, exponential, Gaussian, gamma, chi-squared", "Expectations, variance, and functions of random variables", "Central limit theorem; confidence intervals and hypothesis testing"]
+                    },
+                    {
+                        title: "Machine Learning",
+                        number: "CS/ECE M146",
+                        quarter: "Spring 2022",
+                        description: ["Classification and regression; generalized linear model; decision trees", "Kernel methods and support vector machines", "Clustering, principal component analysis; ensemble methods"]
+                    },
+                    {
+                        title: "Neural Networks and Deep Learning",
+                        number: "ECE C147",
+                        quarter: "Winter 2022",
+                        description: ["Neural network architectures; backpropagation; regularization; optimization", "CNN and RNN architectures, convolution and pooling, LSTM and GRU, backpropagation through time", "Variational autoencoders and generative adversarial networks; adversarial training"]
+                    },
+                    {
+                        title: "Artificial Intelligence",
+                        number: "CS 161",
+                        quarter: "Spring 2022",
+                        description: ["Knowledge representation and problem solving", "Search techniques - BFS, DFS, UCS, greedy, A* search; state-space reduction; two-player games", "Propositional and first-order logic, reasoning and inference"]
+                    },
+                    {
+                        title: "Neural Signal Processing and Machine Learning",
+                        number: "ECE C143A",
+                        quarter: "Spring 2022",
+                        description: ["Fundamental properties of electrical activity in neurons; technology for measuring neural activity", "Neural spiking statistics and Poisson processes", "Generative models and classification; regression and Kalman filtering; principal components analysis"]
+                    },
+                    {
+                        title: "Probabilistic Decision Making",
+                        number: "STATS 115",
+                        quarter: "Fall 2022",
+                        description: ["Decision making as probabilistic inference; planning and search", "Markov decision process", "Reinforcement learning"]
+                    }
+                ]
+            });
+        </script>
+        <h2 id="Math" class="course-section-header">Math Courses</h2>
+        <script>
+            render_classes({
+                classes: [
+                    {
+                        title: "Multivariate Calculus I and II",
+                        number: "MATH 33A, 33B",
+                        quarter: "Fall 2019, Winter 2020",
+                        description: ["Differential calculus of several variables; vector fields", "Integrative calculus of several variables; line and surface integrals"]
+                    },
+                    {
+                        title: "Linear Algebra",
+                        number: "MATH 33A",
+                        quarter: "Spring 2020",
+                        description: ["Systems of linear equations and matrix algebra", "Linear independence, subspaces, bases and dimensionality, orthogonality", "Least-squares methods, determinants, eigenvalues and eigenvectors, and matrix diagonalization"]
+                    },
+                    {
+                        title: "Differential Equations",
+                        number: "MATH 33B",
+                        quarter: "Fall 2020",
+                        description: ["First-order, linear differential equations", "Second-order, linear differential equations with constant coefficients", "Power series solutions; linear systems"]
+                    },
+                    {
+                        title: "Discrete Structures",
+                        number: "MATH 61",
+                        quarter: "Winter 2021",
+                        description: ["Counting theory - permutations and combinations", "Sets and relations", "Graphs and trees"]
+                    }
+                ]
+            });
+        </script>
+        <h2 id="Econ" class="course-section-header">Economics and Econometrics Courses</h2>
+        <script>
+            render_classes({
+                classes: [
+                    {
+                        title: "Intermediate Microeconomics",
+                        number: "ECON 11",
+                        quarter: "Fall 2020",
+                        description: ["Laws of demand, supply, returns, and costs", "Price and output determination under competition models"]
+                    },
+                    {
+                        title: "Advanced Microeconomics",
+                        number: "ECON 101",
+                        quarter: "Winter 2021",
+                        description: ["Theory of factor pricing and income distribution", "General equilibrium; implications of pricing process for optimum allocation of resources", "Game theory"]
+                    },
+                    {
+                        title: "Advanced Macroeconomics",
+                        number: "ECON 102",
+                        quarter: "Spring 2021",
+                        description: ["Theory of income, employment, and price level", "Economic growth and business cycles", "Monetary and fiscal policy"]
+                    },
+                    {
+                        title: "Econometrics",
+                        number: "ECON 103",
+                        quarter: "Fall 2021",
+                        description: ["Univariate regression - ordinary least squares, Gauss-Markov theorem", "Confidence intervals and hypothesis tests; heteroscedasticity", "Implementation of computational methods in R"]
+                    },
+                    {
+                        title: "Economic Forecasting",
+                        number: "ECON 144",
+                        quarter: "Winter 2022",
+                        description: ["Modeling and forecasting trend, seasonality, and cycles of time-series data", "Stochastic trends; measures of volatility", "Data analysis and modeling in R"]
+                    },
+                    {
+                        title: "Computational Financial Engineering",
+                        number: "ECON 147",
+                        quarter: "Winter 2022",
+                        description: ["Econometric modeling in computational finance", "Time-series economics; applications to finance", "Data analysis and modeling in R"]
+                    },
+                    {
+                        title: "Applied Economic Theory",
+                        number: "ECON 187",
+                        quarter: "Spring 2022",
+                        description: ["Methods of causal inference in econometrics - panel data, instrumental variables, differences in differences, regression discontinuity, synthetic control", "Research design; econometric methodology", "Directed research project, including data analysis in Python"]
+                    },
+                    {
+                        title: "Pricing and Strategy",
+                        number: "ECON 106P",
+                        quarter: "Fall 2022",
+                        description: ["Shadow pricing, peak load pricing, two-part pricing, strategic pricing, and auctions and bidding", "Linear programming methods"]
+                    }
+                ]
+            });
+        </script>
+    </div>
+</body>
