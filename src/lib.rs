@@ -63,7 +63,7 @@ async fn retrieve_file_from_static_store(path: &str, env: &Env) -> Result<Respon
         Some(bytes) => Ok(Response::from_bytes(bytes)?.with_headers(headers)),
         None => {
             utils::log_not_present_error("STATIC", path.to_str().unwrap());
-            Response::error("Not Found", 404)
+            Response::error(utils::NOT_FOUND, 404)
         }
     };
 }
