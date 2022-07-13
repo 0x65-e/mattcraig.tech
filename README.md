@@ -1,8 +1,8 @@
 # About
 
-This website is written for Cloudflare Workers using Rust and the [workers-rs](https://github.com/cloudflare/workers-rs) crate.
+This website is written for Cloudflare Workers using Rust and the [workers-rs](https://github.com/cloudflare/workers-rs) crate. Cloudflare workers is a serverless, "function as a service" (FaaS) platform that runs across distributed data centers.
 
-It serves static files stored in Workers KV.
+It serves static files stored in Workers KV, a serverless key-value store on the edge.
 
 ## Usage
 
