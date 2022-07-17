@@ -49,21 +49,21 @@ async fn retrieve_file_from_static_store(path: &str, env: &Env) -> Result<Respon
         Some(_) => "text/plain", // Default to plain text for any other extension
         None => {
             utils::log_invalid_filename(path.to_string_lossy().borrow());
-            return Response::error("Bad Request", 400); // Non-Unicode characters are not supported in filename keys
+            return Response::error(utils::create_error_response("Bad Request", "400 Bad Request", "Sorry, non-unicode characters are not permitted."), 400); // Non-Unicode characters are not supported in filename keys
         },
     };
     headers.set("Content-Type", content_type)?; // Content-Type is always a valid header, so ? should never panic
 
     if path.to_str() == None {
         utils::log_invalid_filename(path.to_string_lossy().borrow());
-        return Response::error("Bad Request", 400); // Non-Unicode characters are not supported in filename keys
+        return Response::error(utils::create_error_response("Bad Request", "400 Bad Request", "Sorry, non-unicode characters are not permitted."), 400); // Non-Unicode characters are not supported in filename keys
     }
     let result: GetOptionsBuilder = static_store.get(path.to_str().unwrap());
     return match result.bytes().await? {
         Some(bytes) => Ok(Response::from_bytes(bytes)?.with_headers(headers)),
         None => {
             utils::log_not_present_error("STATIC", path.to_str().unwrap());
-            Response::error(utils::NOT_FOUND, 404)
+            Response::error(utils::create_error_response("Not Found", "404 Not Found", "Oops, looks like we weren't able to find the webpage you were looking for."), 404)
         }
     };
 }
@@ -91,12 +91,12 @@ pub async fn main(req: Request, env: Env, _ctx: worker::Context) -> Result<Respo
                     Err(e) => {
                         utils::log_generic_error(path, &e.to_string());
                         // Generic error message
-                        Response::error("Internal Server Error", 500)
+                        Response::error(utils::create_error_response("Bad Request", "500 Internal Server Error", "Sorry, something went wrong and we're unable to handle your request."), 500)
                     }
                 };
             } else {
                 // No path parameter - bad client request
-                return Response::error("Bad Request", 400);
+                return Response::error(utils::create_error_response("Bad Request", "400 Bad Request", "Looks like that's not a valid path on this server!"), 400);
             }
         })
         .run(req, env)
