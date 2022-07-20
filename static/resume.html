@@ -7,6 +7,20 @@
 	<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Roboto+Condensed&display=swap" rel="stylesheet">
 	<link rel="stylesheet" href="https://use.typekit.net/tzs5cir.css">
 	<link rel="stylesheet" href="/assets/css/resume.css">
+	<script type="text/javascript" src="/assets/js/mustache.js"></script>
+    <!-- Templates -->
+    <script type="text/javascript">
+        function render_badges(badge_section) {
+            document.write(mustache.render(
+				`<h3>{{header}}</h3>
+				<div class="badge-container">
+					{{#badges}}
+					<div class="badge">{{.}}</div>
+					{{/badges}}
+				</div>`,
+					badge_section));
+        }
+    </script>
 </head>
 <body>
 	<div class="content">
@@ -21,38 +35,20 @@
 				<li><p><a href="https://linkedin.com/in/mattcraig-tech">linkedin.com/in/mattcraig-tech</a></p></li>
 				<li><p><a href="https://github.com/0x65-e">github.com/0x65-e</a></p></li>
 			</ul>
-			<h3>PROGRAMMING LANGUAGES</h3>
-			<div class="badge-container">
-				<div class="badge">Python</div>
-				<div class="badge">C/C++</div>
-				<div class="badge">Java</div>
-				<br/>
-				<div class="badge">Rust</div>
-				<div class="badge">OCaml</div>
-				<div class="badge">Lisp</div>
-			</div>
-			<h3>LIBRARIES</h3>
-			<div class="badge-container">
-				<div class="badge">NumPy</div>
-				<div class="badge">Pandas</div>
-				<div class="badge">sklearn</div>
-				<div class="badge">Seaborn</div>
-				<br/>
-				<div class="badge">TensorFlow</div>
-				<div class="badge">Keras</div>
-				<div class="badge">PyUnit</div>
-				<div class="badge">Jupyter</div>
-			</div>
-			<h3>TOOLS</h3>
-			<div class="badge-container">
-				<div class="badge">Linux</div>
-				<div class="badge">Git/Github</div>
-				<div class="badge">Oracle VM VirtualBox</div>
-				<br/>
-				<div class="badge">Android Studio</div>
-				<div class="badge">Docker</div>
-				<div class="badge">Nmap</div>
-			</div>
+			<script>
+				render_badges({
+					header: "PROGRAMMING LANGUAGES",
+					badges: ["Python", "C/C++", "Java", "Rust", "OCaml", "Lisp"]
+				});
+				render_badges({
+					header: "LIBRARIES",
+					badges: ["NumPy", "Pandas", "sklearn", "Seaborn", "TensorFlow", "Keras", "PyUnit", "Jupyter"]
+				});
+				render_badges({
+					header: "TOOLS",
+					badges: ["Git/Github", "Linux", "Gradle", "VirtualBox", "Docker"]
+				});
+			</script>
 			<h3>EDUCATION</h3>
 			<h4>University of California, Los Angeles (UCLA)</h4>
 			<h5>B.S. Computer Science, B.A. Economics | Expected June 2023</h5>
