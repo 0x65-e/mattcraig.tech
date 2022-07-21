@@ -12,7 +12,7 @@ if (Test-Path $OutFile) {
 	Remove-Item $OutFile
 }
 
-$BinaryExtensions = ".jpg",".png",".gif",".webp",".ttf",".woff",".woff2",".eot",".pdf"
+$BinaryExtensions = ".jpg",".jpeg",".png",".gif",".webp",".ttf",".woff",".woff2",".eot",".pdf",".wav",".mp3",".mpeg",".mp4",".otf",".zip",".7z"
 Write-Host "Uploading files from directory $BaseDir"
 Add-Content -Path $OutFile -Value "["
 $PrefixSize = $BaseDir.FullName.Length
