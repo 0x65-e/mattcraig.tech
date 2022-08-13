@@ -13,7 +13,10 @@ if (Test-Path $OutFile) {
 }
 
 $BinaryExtensions = ".jpg",".jpeg",".png",".gif",".webp",".ttf",".woff",".woff2",".eot",".pdf",".wav",".mp3",".mpeg",".mp4",".otf",".zip",".7z"
-Write-Host "Uploading files from directory $BaseDir"
+Write-Host "Uploading files from directory $BaseDir to keystore $Binding"
+if ($Preview.IsPresent) {
+	Write-Host "Using preview keystore"
+}
 Add-Content -Path $OutFile -Value "["
 $PrefixSize = $BaseDir.FullName.Length
 # Get every file in the base directory
