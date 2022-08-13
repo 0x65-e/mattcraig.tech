@@ -40,13 +40,15 @@ foreach ($File in Get-ChildItem -File -Recurse -Path $BaseDir) {
 		Write-Host "File length is 0. Skipping."
 	}
 }
-# I'm lazy, so add a superfluous value rather than remove the comma from the last key
-Add-Content -Path $OutFile -Value "`t{`n`t`t`"key`": `"test`",`n`t`t`"value`": `"test`"`n`t}`n]"
+# Add a superfluous value rather than remove the comma from the last key
+Add-Content -Path $OutFile -Value "`t{`n`t`t`"key`": `"sentinel`",`n`t`t`"value`": `"active`"`n`t}`n]"
 
 # Upload files in bulk
 Write-Host "Uploading bulk binary files:"
 if ($Preview.IsPresent) {
 	wrangler kv:bulk put $OutFile --binding $Binding --preview
+	wrangler kv:key delete sentinel --binding $Binding --preview # Remember to delete sentinel value
 } else {
 	wrangler kv:bulk put $OutFile --binding $Binding --preview false
+	wrangler kv:key delete sentinel --binding $Binding --preview false
 }
