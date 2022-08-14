@@ -25,11 +25,12 @@ pub fn create_error_response(title: &str, error: &str, message: &str) -> String 
 
 pub fn log_request(req: &Request) {
     console_log!(
-        "{} - [{}], {} located at: {:?}, within: {}",
+        "{} - [{}], {} located at: {:?}, within: {}, {}",
         Date::now().to_string(),
         req.path(),
         req.headers().get("User-Agent").unwrap_or(Some(String::from("Unknown"))).unwrap_or(String::from("Unknown")),
         req.cf().coordinates().unwrap_or_default(),
+        req.cf().city().unwrap_or("unknown city".into()),
         req.cf().region().unwrap_or("unknown region".into())
     );
 }
