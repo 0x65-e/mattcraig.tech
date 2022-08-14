@@ -13,7 +13,10 @@ if (Test-Path $OutFile) {
 }
 
 $BinaryExtensions = ".jpg",".jpeg",".png",".gif",".webp",".ttf",".woff",".woff2",".eot",".pdf",".wav",".mp3",".mpeg",".mp4",".otf",".zip",".7z"
-Write-Host "Uploading files from directory $BaseDir"
+Write-Host "Uploading files from directory $BaseDir to keystore $Binding"
+if ($Preview.IsPresent) {
+	Write-Host "Using preview keystore"
+}
 Add-Content -Path $OutFile -Value "["
 $PrefixSize = $BaseDir.FullName.Length
 # Get every file in the base directory
@@ -40,13 +43,15 @@ foreach ($File in Get-ChildItem -File -Recurse -Path $BaseDir) {
 		Write-Host "File length is 0. Skipping."
 	}
 }
-# I'm lazy, so add a superfluous value rather than remove the comma from the last key
-Add-Content -Path $OutFile -Value "`t{`n`t`t`"key`": `"test`",`n`t`t`"value`": `"test`"`n`t}`n]"
+# Add a superfluous value rather than remove the comma from the last key
+Add-Content -Path $OutFile -Value "`t{`n`t`t`"key`": `"sentinel`",`n`t`t`"value`": `"active`"`n`t}`n]"
 
 # Upload files in bulk
 Write-Host "Uploading bulk binary files:"
 if ($Preview.IsPresent) {
 	wrangler kv:bulk put $OutFile --binding $Binding --preview
+	wrangler kv:key delete sentinel --binding $Binding --preview # Remember to delete sentinel value
 } else {
 	wrangler kv:bulk put $OutFile --binding $Binding --preview false
+	wrangler kv:key delete sentinel --binding $Binding --preview false
 }
