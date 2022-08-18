@@ -11,11 +11,14 @@ jobs:
     name: Deploy
     steps:
       - uses: actions/checkout@v2
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
       - uses: actions-rs/toolchain@v1
         with:
           toolchain: stable
       - run: |
-          cargo install wrangler
+          npm install wrangler
           mkdir -p ~/.wrangler/config/
           echo "api_token=\"${CF_API_TOKEN}\"" > ~/.wrangler/config/default.toml
           wrangler publish
