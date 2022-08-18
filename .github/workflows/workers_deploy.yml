@@ -18,10 +18,9 @@ jobs:
         with:
           toolchain: stable
       - run: |
-          npm install wrangler
           mkdir -p ~/.wrangler/config/
           echo "api_token=\"${CF_API_TOKEN}\"" > ~/.wrangler/config/default.toml
-          wrangler publish
+          npx wrangler publish
         env:
           CF_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
           CF_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
