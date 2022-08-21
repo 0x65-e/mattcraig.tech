@@ -55,3 +55,9 @@ if ($Preview.IsPresent) {
 	wrangler kv:bulk put $OutFile --binding $Binding --preview false
 	wrangler kv:key delete sentinel --binding $Binding --preview false
 }
+
+# Remove outfile if it exists
+if (Test-Path $OutFile) {
+	Write-Host "Deleting $OutFile"
+	Remove-Item $OutFile
+}
