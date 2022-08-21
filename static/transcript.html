@@ -6,6 +6,7 @@
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Roboto+Condensed&display=swap" rel="stylesheet">
 	<link rel="stylesheet" href="https://use.typekit.net/tzs5cir.css">
+    <link rel="stylesheet" href="/assets/css/fontawesome-all.min.css">
 	<link rel="stylesheet" href="/assets/css/resume.css">
     <style>
         .course-listing {
@@ -29,7 +30,9 @@
                 `<hr style="height: 1px;">
                 <div class="course-listing">
                     <div class="left-column">
+                        {{#link}}<div class="link-container"><a href="{{link}}" class="hover-link">{{/link}}
                         <h3 class="course-title">{{title}}</h3>
+                        {{#link}}</a><i class="fas fa-link"></i></div>{{/link}}
                         <h4>{{number}}</h4>
                         <h5>{{quarter}}</h5>
                     </div>
@@ -116,11 +119,12 @@
                         title: "Secure Computer Systems",
                         number: "ECE 188",
                         quarter: "Spring 2022",
-                        description: ["Hardware security - cryptographic primitives, attestation, trusted execution, hardware Trojans", "Machine learning security and privacy - adversarial attacks, poisoning attacks, model theft, privacy-preserving computation"]
+                        description: ["Hardware security - cryptographic primitives, attestation, trusted execution, hardware Trojans", "Machine learning security and privacy - adversarial attacks, poisoning attacks, model theft, privacy-preserving computation"],
+                        link: "https://github.com/0x65-e/ECE188DeepLearning"
                     },
                     {
                         title: "Computer Networks",
-                        number: "CS 188",
+                        number: "CS 118",
                         quarter: "Fall 2022",
                         description: ["Networking protocols; Internet architecture", "Routing algorithms and protocols", "Link layer protocols - Ethernet, wireless channels"]
                     }
@@ -147,13 +151,15 @@
                         title: "Neural Networks and Deep Learning",
                         number: "ECE C147",
                         quarter: "Winter 2022",
-                        description: ["Neural network architectures; backpropagation; regularization; optimization", "CNN and RNN architectures, convolution and pooling, LSTM and GRU, backpropagation through time", "Variational autoencoders and generative adversarial networks; adversarial training"]
+                        description: ["Neural network architectures; backpropagation; regularization; optimization", "CNN and RNN architectures, convolution and pooling, LSTM and GRU, backpropagation through time", "Variational autoencoders and generative adversarial networks; adversarial training"],
+                        link: "/files/ECE_C147_Project_Report.pdf"
                     },
                     {
                         title: "Artificial Intelligence",
                         number: "CS 161",
                         quarter: "Spring 2022",
-                        description: ["Knowledge representation and problem solving", "Search techniques - BFS, DFS, UCS, greedy, A* search; state-space reduction; two-player games", "Propositional and first-order logic, reasoning and inference"]
+                        description: ["Knowledge representation and problem solving", "Search techniques - BFS, DFS, UCS, greedy, A* search; state-space reduction; two-player games", "Propositional and first-order logic, reasoning and inference"],
+                        link: "https://github.com/0x65-e/CS161"
                     },
                     {
                         title: "Neural Signal Processing and Machine Learning",
@@ -230,10 +236,18 @@
                         description: ["Univariate regression - ordinary least squares, Gauss-Markov theorem", "Confidence intervals and hypothesis tests; heteroscedasticity", "Implementation of computational methods in R"]
                     },
                     {
+                        title: "Directed Research in Economics",
+                        number: "ECON 199A",
+                        quarter: "Fall 2021",
+                        description: ["Directed research into the effects of coronavirus pandemic and recovery efforts", "Formulate policy proposal to Federal Reserve aimed at reducing unemployment and inflation"],
+                        link: "/files/Economics_199A_Final_Paper.pdf"
+                    },
+                    {
                         title: "Economic Forecasting",
                         number: "ECON 144",
                         quarter: "Winter 2022",
-                        description: ["Modeling and forecasting trend, seasonality, and cycles of time-series data", "Stochastic trends; measures of volatility", "Data analysis and modeling in R"]
+                        description: ["Modeling and forecasting trend, seasonality, and cycles of time-series data", "Stochastic trends; measures of volatility", "Data analysis and modeling in R"],
+                        link: "/files/Econ_144_Project_3.pdf"
                     },
                     {
                         title: "Computational Financial Engineering",
@@ -245,7 +259,8 @@
                         title: "Applied Economic Theory",
                         number: "ECON 187",
                         quarter: "Spring 2022",
-                        description: ["Methods of causal inference in econometrics - panel data, instrumental variables, differences in differences, regression discontinuity, synthetic control", "Research design; econometric methodology", "Directed research project, including data analysis in Python"]
+                        description: ["Methods of causal inference in econometrics - panel data, instrumental variables, differences in differences, regression discontinuity, synthetic control", "Research design; econometric methodology", "Directed research project, including data analysis in Python"],
+                        link: "/files/Economics_187_Final_Paper.pdf"
                     },
                     {
                         title: "Pricing and Strategy",

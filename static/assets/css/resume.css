@@ -133,6 +133,17 @@ a {
 	margin: 4px 3px;
 }
 
+.link-container {
+	display: flex;
+	align-items: baseline;
+	margin-bottom: -1.5em;
+}
+
+.fa-link {
+	padding-left: 0.5em;
+	color: #253447;
+}
+
 .navbar {
 	position: fixed;
 	margin-top: 6%;
