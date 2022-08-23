@@ -1,10 +1,13 @@
 body {
-	background-color: #f5f5f5;
+	--background-color: #f5f5f5;
+	--background-color-active: #ececec;
+	--accent-color: #253447;
+	background-color: var(--background-color);
+	color: var(--accent-color);
 	font-size: 100%;
 }
 
 h1 {
-	color: #253447;
 	font-family: 'Roboto', sans-serif;
 	font-weight: 700;
 	font-size: 4.25em;
@@ -12,7 +15,6 @@ h1 {
 }
 
 h2 {
-	color: #253447;
 	font-family: 'Roboto Condensed', sans-serif;
 	font-weight: 400;
 	font-size: 1.5em;
@@ -20,7 +22,6 @@ h2 {
 }
 
 h3 {
-	color: #253447;
 	margin-top: 2em;
 	font-family: 'Roboto', sans-serif;
 	font-weight: 700;
@@ -29,7 +30,6 @@ h3 {
 }
 
 h4 {
-	color: #253447;
 	font-family: 'aileron', sans-serif;
 	font-weight: 700;
 	font-style: normal;
@@ -37,7 +37,6 @@ h4 {
 }
 
 h5 {
-	color: #253447;
 	margin-top: 0.5em;
 	margin-bottom: 0.5em;
 	font-family: 'aileron', sans-serif;
@@ -52,7 +51,6 @@ hr {
 }
 
 p {
-	color: #253447;
 	font-family: 'aileron', sans-serif;
 	font-weight: 400;
 	font-style: normal;
@@ -60,24 +58,12 @@ p {
 }
 
 ul {
-	color: #253447;
 	list-style-type: '- ';
 	padding-left: 1.5em;
 }
 
-li.github {
-	background-image: url("https://logos-download.com/wp-content/uploads/2016/09/GitHub_logo.png");
-	background-size: 35px;
-	background-repeat: no-repeat;
-	background-position: left center;
-	height: 35px;
-	list-style: none;
-	padding-left: 40px;
-	margin-left: -40px;
-}
-
 a {
-	color: #253447;
+	color: var(--accent-color);
 }
 
 .hover-link {
@@ -122,8 +108,8 @@ a {
 }
 
 .badge {
-	background-color: #253447;
-	color: #f5f5f5;
+	background-color: var(--accent-color);
+	color: var(--background-color);
 	font-family: 'aileron', sans-serif;
 	font-weight: 400;
 	font-style: normal;
@@ -136,6 +122,7 @@ a {
 
 .link-container {
 	display: flex;
+	justify-content: space-between;
 	align-items: baseline;
 	margin-bottom: -1.5em;
 }
@@ -155,7 +142,6 @@ a {
 	display: block;
 	padding: 14px;
 	text-decoration: none;
-	color: #253447;
 	font-family: 'aileron', sans-serif;
 	font-weight: 400;
 	font-style: normal;
@@ -164,5 +150,5 @@ a {
 
 .navbar a:hover {
 	text-decoration: underline;
-	background-color: #ececec;
+	background-color: var(--background-color-active);
 }
