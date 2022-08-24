@@ -2,12 +2,13 @@ param (
 	[switch]$Preview,
 	[String]$Binding = "STATIC",
 	[String]$OutFile = "kv-bulk.json",
-	[String]$Base = ".\static\"
+	[String]$Base = ".\static\",
+	[switch]$SkipBinary
 )
 $BaseDir = (Get-Item -Path $Base)
 
 # Remove outfile if it exists
-if (Test-Path $OutFile) {
+if ((Test-Path $OutFile) -and -not $SkipBinary.IsPresent) {
 	Write-Host "Deleting existing $OutFile"
 	Remove-Item $OutFile
 }
@@ -27,10 +28,14 @@ foreach ($File in Get-ChildItem -File -Recurse -Path $BaseDir) {
 	# This will fail if the file is empty
 	if ($File.length) {
 		if ($IsBinary) {
-			Write-Host "Binary data file. Uploading in bulk."
-			Add-Content -Path $OutFile -Value "`t{`n`t`t`"key`": `"$SubPath`","
-			$EncodedContents = [convert]::ToBase64String((Get-Content -Path $File.FullName -Encoding byte))
-			Add-Content -Path $OutFile -Value "`t`t`"value`": `"$EncodedContents`",`n`t`t`"base64`": true`n`t},"
+			if ($SkipBinary.IsPresent) {
+				Write-Host "Skipping binary data file."
+			} else {
+				Write-Host "Binary data file. Uploading in bulk."
+				Add-Content -Path $OutFile -Value "`t{`n`t`t`"key`": `"$SubPath`","
+				$EncodedContents = [convert]::ToBase64String((Get-Content -Path $File.FullName -Encoding byte))
+				Add-Content -Path $OutFile -Value "`t`t`"value`": `"$EncodedContents`",`n`t`t`"base64`": true`n`t},"
+			}
 		} else {
 			# Upload text files directly, since it's easier than escaping special characters in strings
 			if ($Preview.IsPresent) {
@@ -46,18 +51,20 @@ foreach ($File in Get-ChildItem -File -Recurse -Path $BaseDir) {
 # Add a superfluous value rather than remove the comma from the last key
 Add-Content -Path $OutFile -Value "`t{`n`t`t`"key`": `"sentinel`",`n`t`t`"value`": `"active`"`n`t}`n]"
 
-# Upload files in bulk
-Write-Host "Uploading bulk binary files:"
-if ($Preview.IsPresent) {
-	wrangler kv:bulk put $OutFile --binding $Binding --preview
-	wrangler kv:key delete sentinel --binding $Binding --preview # Remember to delete sentinel value
-} else {
-	wrangler kv:bulk put $OutFile --binding $Binding --preview false
-	wrangler kv:key delete sentinel --binding $Binding --preview false
-}
+if (-not $SkipBinary.IsPresent) {
+	# Upload files in bulk
+	Write-Host "Uploading bulk binary files:"
+	if ($Preview.IsPresent) {
+		wrangler kv:bulk put $OutFile --binding $Binding --preview
+		wrangler kv:key delete sentinel --binding $Binding --preview # Remember to delete sentinel value
+	} else {
+		wrangler kv:bulk put $OutFile --binding $Binding --preview false
+		wrangler kv:key delete sentinel --binding $Binding --preview false
+	}
 
-# Remove outfile if it exists
-if (Test-Path $OutFile) {
-	Write-Host "Deleting $OutFile"
-	Remove-Item $OutFile
+	# Remove outfile if it exists
+	if (Test-Path $OutFile) {
+		Write-Host "Deleting $OutFile"
+		Remove-Item $OutFile
+	}
 }
