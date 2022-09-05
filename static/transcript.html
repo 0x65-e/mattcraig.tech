@@ -43,7 +43,7 @@
                         <h3 class="course-title">{{title}}</h3>
                         {{#link}}</a><i class="fas fa-link"></i></div>{{/link}}
                         <h4>{{number}}</h4>
-                        <h5>{{quarter}}</h5>
+                        <h5>{{quarter}}{{#audited}} (Audited){{/audited}}</h5>
                     </div>
                     <div class="right-column">
                         <ul>
@@ -186,6 +186,20 @@
                         number: "STATS 115",
                         quarter: "Fall 2022",
                         description: ["Decision making as probabilistic inference; planning and search", "Markov decision process", "Reinforcement learning"]
+                    },
+                    {
+                        title: "Large-Scale Machine Learning",
+                        number: "COM SCI 260D",
+                        quarter: "Fall 2022",
+                        description: ["Advanced optimization and variance reduction", "Distributed training, federated learning, data summarization, robust learning", "Neural network pruning, neural architecture search, neural network quantization"],
+                        audited: true
+                    },
+                    {
+                        title: "Pattern Recognition and Machine Learning",
+                        number: "COM SCI M276A",
+                        quarter: "Fall 2022",
+                        description: ["Bayesian decision theory, parametric and nonparametric learning", "Clustering, complexity (VC-dimension, MDL, AIC), PCA/ICA/TCA, MDS", "SVMs and boosting"],
+                        audited: true
                     }
                 ]
             });
