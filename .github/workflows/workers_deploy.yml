@@ -10,14 +10,18 @@ jobs:
     runs-on: ubuntu-latest
     name: Checkout, Build, and Publish
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v3
+      - name: Check out repository code
+        uses: actions/checkout@v2
+      - name: Set up Node v16
+        uses: actions/setup-node@v3
         with:
           node-version: 16
-      - uses: actions-rs/toolchain@v1
+      - name: Set up Rust toolchain
+        uses: actions-rs/toolchain@v1
         with:
           toolchain: stable
-      - run: |
+      - name: Publish
+        run: |
           mkdir -p ~/.wrangler/config/
           echo "api_token=\"${CF_API_TOKEN}\"" > ~/.wrangler/config/default.toml
           npx wrangler publish
