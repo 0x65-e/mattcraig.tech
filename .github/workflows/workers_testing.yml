@@ -23,10 +23,10 @@ jobs:
       - name: Authenticate wrangler
         run: |
           mkdir -p ~/.wrangler/config/
-          echo "api_token=\"${CF_API_TOKEN}\"" > ~/.wrangler/config/default.toml
+          echo "api_token=\"${CLOUDFLARE_API_TOKEN}\"" > ~/.wrangler/config/default.toml
         env:
-          CF_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
-          CF_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
       - name: Create a separate KV
         shell: bash
         run: |
@@ -35,13 +35,13 @@ jobs:
           sed -i "s/{[^}]*}/${NAMESPACE}/g" wrangler.toml
         env:
           PR_NUMBER: ${{ github.event.number }}
-          CF_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
-          CF_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
       - name: Publish
         run: npx wrangler publish
         env:
-          CF_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
-          CF_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
       - name: Upload Files
         shell: pwsh
         run: ./kv-bulk-upload.ps1
