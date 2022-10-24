@@ -1,4 +1,4 @@
-name: Deploy
+name: Deploy to Production
 
 on:
   push:
@@ -8,7 +8,7 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    name: Deploy
+    name: Checkout, Build, and Publish
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v3

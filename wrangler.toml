@@ -2,6 +2,8 @@ name = "mattcraig-tech"
 workers_dev = true
 compatibility_date = "2022-07-05"
 
+send_metrics = false
+
 kv_namespaces = [
          { binding = "STATIC", id = "71f84c7a3bc348d6a4749535fa0b850d", preview_id = "59ecddf3e5ed4a85bef94a74f6a06272" }
 ]

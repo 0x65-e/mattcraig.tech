@@ -1,0 +1,37 @@
+name: Deploy to Testing
+
+on: 
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    name: Checkout, Build, and Publish
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+      - run: |
+          mkdir -p ~/.wrangler/config/
+          echo "api_token=\"${CF_API_TOKEN}\"" > ~/.wrangler/config/default.toml
+        env:
+          CF_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
+          CF_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
+      - run: |
+          sed -i "s/mattcraig-tech/mattcraig-tech-pr${PR_NUMBER}/" wrangler.toml
+          NAMESPACE=$(npx wrangler kv:namespace create STATIC | tail -n 2)
+          sed -i "s/{[^}]*}/${NAMESPACE}/g" wrangler.toml
+        env:
+          PR_NUMBER: ${{ github.event.number }}
+          CF_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
+          CF_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
+      - run: npx wrangler publish
+        env:
+          CF_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
+          CF_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
