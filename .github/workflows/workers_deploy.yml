@@ -28,3 +28,6 @@ jobs:
         env:
           CF_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
           CF_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
+      - name: Upload Files
+        shell: pwsh
+        run: ./kv-bulk-upload.ps1

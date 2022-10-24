@@ -39,9 +39,9 @@ foreach ($File in Get-ChildItem -File -Recurse -Path $BaseDir) {
 		} else {
 			# Upload text files directly, since it's easier than escaping special characters in strings
 			if ($Preview.IsPresent) {
-				wrangler kv:key put $SubPath --binding $Binding --path $File.FullName --preview
+				npx wrangler kv:key put $SubPath --binding $Binding --path $File.FullName --preview
 			} else {
-				wrangler kv:key put $SubPath --binding $Binding --path $File.FullName --preview false
+				npx wrangler kv:key put $SubPath --binding $Binding --path $File.FullName --preview false
 			}
 		}
 	} else {
@@ -55,11 +55,11 @@ if (-not $SkipBinary.IsPresent) {
 	# Upload files in bulk
 	Write-Host "Uploading bulk binary files:"
 	if ($Preview.IsPresent) {
-		wrangler kv:bulk put $OutFile --binding $Binding --preview
-		wrangler kv:key delete sentinel --binding $Binding --preview # Remember to delete sentinel value
+		npx wrangler kv:bulk put $OutFile --binding $Binding --preview
+		npx wrangler kv:key delete sentinel --binding $Binding --preview # Remember to delete sentinel value
 	} else {
-		wrangler kv:bulk put $OutFile --binding $Binding --preview false
-		wrangler kv:key delete sentinel --binding $Binding --preview false
+		npx wrangler kv:bulk put $OutFile --binding $Binding --preview false
+		npx wrangler kv:key delete sentinel --binding $Binding --preview false
 	}
 
 	# Remove outfile if it exists
