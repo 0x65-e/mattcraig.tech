@@ -33,7 +33,7 @@ foreach ($File in Get-ChildItem -File -Recurse -Path $BaseDir) {
 			} else {
 				Write-Host "Binary data file. Uploading in bulk."
 				Add-Content -Path $OutFile -Value "`t{`n`t`t`"key`": `"$SubPath`","
-				$EncodedContents = [convert]::ToBase64String((Get-Content -Path $File.FullName -Encoding byte))
+				$EncodedContents = [convert]::ToBase64String((Get-Content -Path $File.FullName -AsByteStream))
 				Add-Content -Path $OutFile -Value "`t`t`"value`": `"$EncodedContents`",`n`t`t`"base64`": true`n`t},"
 			}
 		} else {
