@@ -20,14 +20,7 @@ jobs:
         uses: actions-rs/toolchain@v1
         with:
           toolchain: stable
-      - name: Authenticate wrangler
-        run: |
-          mkdir -p ~/.wrangler/config/
-          echo "api_token=\"${CLOUDFLARE_API_TOKEN}\"" > ~/.wrangler/config/default.toml
-        env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
-          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
-      - name: Create a separate KV
+      - name: Create a testing KV and modify wrangler.toml
         shell: bash
         run: |
           sed -i "s/mattcraig-tech/mattcraig-tech-pr${PR_NUMBER}/" wrangler.toml
@@ -39,7 +32,7 @@ jobs:
           PR_NUMBER: ${{ github.event.number }}
           CLOUDFLARE_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
-      - name: Publish
+      - name: Publish test worker
         run: npx wrangler publish
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
@@ -47,3 +40,6 @@ jobs:
       - name: Upload Files
         shell: pwsh
         run: ./kv-bulk-upload.ps1
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
