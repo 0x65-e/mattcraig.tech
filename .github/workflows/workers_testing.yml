@@ -32,7 +32,9 @@ jobs:
         run: |
           sed -i "s/mattcraig-tech/mattcraig-tech-pr${PR_NUMBER}/" wrangler.toml
           NAMESPACE=$(npx wrangler kv:namespace create STATIC | tail -n 2)
+          echo $NAMESPACE
           sed -i "s/{[^}]*}/${NAMESPACE}/g" wrangler.toml
+          cat wrangler.toml
         env:
           PR_NUMBER: ${{ github.event.number }}
           CLOUDFLARE_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
