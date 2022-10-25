@@ -8,7 +8,7 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    name: Checkout, Build, and Publish
+    name: Checkout, Build, and Publish Test Worker
     steps:
       - name: Check out repository code
         uses: actions/checkout@v2
@@ -22,12 +22,7 @@ jobs:
           toolchain: stable
       - name: Create a testing KV and modify wrangler.toml
         shell: bash
-        run: |
-          sed -i "s/mattcraig-tech/mattcraig-tech-pr${PR_NUMBER}/" wrangler.toml
-          NAMESPACE=$(npx wrangler kv:namespace create STATIC | sed ':again;$!N;$!b again; s/.*\({[^}]*}\).*/\1/g')
-          echo $NAMESPACE
-          sed -i "s/{[^}]*}/${NAMESPACE}/g" wrangler.toml
-          cat wrangler.toml
+        run: . ./.github/scripts/setup_test_worker.sh
         env:
           PR_NUMBER: ${{ github.event.number }}
           CLOUDFLARE_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
