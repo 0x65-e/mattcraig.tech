@@ -1,7 +1,7 @@
-name: Deploy to Production
+name: Deploy to Testing
 
-on:
-  push:
+on: 
+  pull_request:
     branches:
       - master
 
@@ -20,9 +20,20 @@ jobs:
         uses: actions-rs/toolchain@v1
         with:
           toolchain: stable
-      - name: Publish
+      - name: Create a testing KV and modify wrangler.toml
+        shell: bash
         run: |
-          npx wrangler publish
+          sed -i "s/mattcraig-tech/mattcraig-tech-pr${PR_NUMBER}/" wrangler.toml
+          NAMESPACE=$(npx wrangler kv:namespace create STATIC | sed ':again;$!N;$!b again; s/.*\({[^}]*}\).*/\1/g')
+          echo $NAMESPACE
+          sed -i "s/{[^}]*}/${NAMESPACE}/g" wrangler.toml
+          cat wrangler.toml
+        env:
+          PR_NUMBER: ${{ github.event.number }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
+      - name: Publish test worker
+        run: npx wrangler publish
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
