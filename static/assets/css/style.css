@@ -131,12 +131,16 @@ a {
 .link-container {
 	display: flex;
 	justify-content: space-between;
-	align-items: baseline;
-	margin-bottom: -1.5em;
+	align-items: center;
 }
 
-.fa-link {
-	padding-left: 0.5em;
+.link-container h3 {
+	margin-top: 1em;
+}
+
+.link-container h4 {
+	margin-top: 0.5em;
+	margin-bottom: 0.67em;
 }
 
 .navbar {
