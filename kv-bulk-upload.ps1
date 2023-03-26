@@ -3,7 +3,8 @@ param (
 	[String]$Binding = "STATIC",
 	[String]$OutFile = "kv-bulk.json",
 	[String]$Base = ".\static\",
-	[switch]$SkipBinary
+	[switch]$SkipBinary,
+	[int]$LimitSize = 1
 )
 $BaseDir = (Get-Item -Path $Base)
 
@@ -27,9 +28,13 @@ foreach ($File in Get-ChildItem -File -Recurse -Path $BaseDir) {
 	Write-Host "- $SubPath"
 	# This will fail if the file is empty
 	if ($File.length) {
+		if (($LimitSize -ne 0) -and (($File.length / 1MB) -gt $LimitSize)) {
+			Write-Warning "Skipping large file."
+			continue
+		}
 		if ($IsBinary) {
 			if ($SkipBinary.IsPresent) {
-				Write-Host "Skipping binary data file."
+				Write-Warning "Skipping binary data file."
 			} else {
 				Write-Host "Binary data file. Uploading in bulk."
 				Add-Content -Path $OutFile -Value "`t{`n`t`t`"key`": `"$SubPath`","

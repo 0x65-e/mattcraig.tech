@@ -1,0 +1,24 @@
+name: Upload files to Workers KV
+
+on:
+  workflow_dispatch:
+    inputs:
+      limit:
+        description: "Maximum file size (in MB)"
+        default: 1
+        required: true
+        type: number
+
+jobs:
+  upload:
+    runs-on: ubuntu-latest
+    name: Upload file to Workers KV
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v2
+      - name: Upload Files
+        shell: pwsh
+        run: ./kv-bulk-upload.ps1 -LimitSize ${{ inputs.limit }}
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
