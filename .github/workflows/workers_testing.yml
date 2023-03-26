@@ -11,7 +11,7 @@ jobs:
     name: Checkout, Build, and Publish Test Worker
     steps:
       - name: Check out repository code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Set up Node v16
         uses: actions/setup-node@v3
         with:
