@@ -13,4 +13,4 @@ main = "build/worker/shim.mjs"
 WORKERS_RS_VERSION = "0.0.9"
 
 [build]
-command = "cargo install -q worker-build && worker-build --release"
+command = "cargo install -q worker-build@0.0.8 && worker-build --release"
