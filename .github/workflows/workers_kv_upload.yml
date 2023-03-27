@@ -16,10 +16,10 @@ on:
 jobs:
   upload:
     runs-on: ubuntu-latest
-    name: Upload file to Workers KV
+    name: Upload files to Workers KV
     steps:
       - name: Check out repository code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Create a testing KV and modify wrangler.toml
         shell: bash
         run: . ./.github/scripts/setup_test_worker.sh
