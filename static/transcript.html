@@ -30,6 +30,23 @@
             text-align: center;
             margin-top: 2em;
         }
+
+        .course-link-container {
+            display: inline-flex;
+            justify-content: left;
+            opacity: 25%;
+            transition: opacity 0.4s;
+        }
+
+        .course-listing:hover .course-link-container {
+            opacity: 100%;
+        }
+
+        .course-link {
+            font-size: 1em;
+            margin-left: 0.5em;
+            margin-right: 0.25em;
+        }
     </style>
     <script type="text/javascript" src="/assets/js/mustache.js"></script>
     <!-- Templates -->
@@ -44,6 +61,14 @@
                         {{#link}}</a><i class="fas fa-link"></i></div>{{/link}}
                         <h4>{{number}}</h4>
                         <h5>{{quarter}}{{#audited}} (Audited){{/audited}}</h5>
+                        {{#links}}
+                            <div class="course-link-container">
+                                <a href="{{link}}" class="hover-link">
+                                    <p class="course-link">{{title}}<p>
+                                </a>
+                                <i class="fas fa-link fa-2xs"></i>
+                            </div>
+                        {{/links}}
                     </div>
                     <div class="right-column">
                         <ul>
@@ -134,14 +159,18 @@
                         number: "ECE 188",
                         quarter: "Spring 2022",
                         description: ["Hardware security - cryptographic primitives, attestation, trusted execution, hardware Trojans", "Machine learning security and privacy - adversarial attacks, poisoning attacks, model theft, privacy-preserving computation"],
-                        link: "https://github.com/0x65-e/ECE188DeepLearning"
+                        links: [
+                            {"link": "https://github.com/0x65-e/ECE188DeepLearning", "title": "Project Code"}
+                        ]
                     },
                     {
                         title: "Computer Networks",
                         number: "CS 118",
                         quarter: "Fall 2022",
                         description: ["Layered network architecture; Internet protocols and architecture", "Physical transmission; link layer protocols - Ethernet, wireless channels", "Internetworking; routing algorithms and protocols; congestion control; transport protocols" ],
-                        link: "https://github.com/0x65-e/CS118"
+                        links: [
+                            {"link": "https://github.com/0x65-e/CS118", "title": "Project Code"}
+                        ]
                     },
                     {
                         title: "Software Engineering",
@@ -173,14 +202,18 @@
                         number: "ECE C147",
                         quarter: "Winter 2022",
                         description: ["Neural network architectures; backpropagation; regularization; optimization", "CNN and RNN architectures, convolution and pooling, LSTM and GRU, backpropagation through time", "Variational autoencoders and generative adversarial networks; adversarial training"],
-                        link: "/files/ECE_C147_Project_Report.pdf"
+                        links: [
+                            {"link": "/files/ECE_C147_Project_Report.pdf", "title": "Project Report"}
+                        ]
                     },
                     {
                         title: "Artificial Intelligence",
                         number: "CS 161",
                         quarter: "Spring 2022",
                         description: ["Knowledge representation and problem solving; constraint solving and optimization", "Search techniques - BFS, DFS, UCS, greedy, A* search; state-space reduction; two-player games", "Propositional and first-order logic, reasoning and inference"],
-                        link: "https://github.com/0x65-e/CS161"
+                        links: [
+                            {"link": "https://github.com/0x65-e/CS161", "title": "Homework Code"}
+                        ]
                     },
                     {
                         title: "Neural Signal Processing and Machine Learning",
@@ -193,7 +226,9 @@
                         number: "STATS 115",
                         quarter: "Fall 2022",
                         description: ["Decision making as probabilistic inference; planning and search", "Markov decision processes; policy and value iteration", "Reinforcement learning; Monte Carlo and temporal difference methods"],
-                        link: "https://github.com/0x65-e/Stats-115"
+                        links: [
+                            {"link": "https://github.com/0x65-e/Stats-115", "title": "Homework Code"}
+                        ]
                     },
                     {
                         title: "Large-Scale Machine Learning",
@@ -281,14 +316,20 @@
                         number: "ECON 199A",
                         quarter: "Fall 2021",
                         description: ["Directed research into the effects of coronavirus pandemic and recovery efforts", "Formulate policy proposal to Federal Reserve aimed at reducing unemployment and inflation"],
-                        link: "/files/Economics_199A_Final_Paper.pdf"
+                        links: [
+                            {"link": "/files/Economics_199A_Final_Paper.pdf", "title": "Final Paper"}
+                        ]
                     },
                     {
                         title: "Economic Forecasting",
                         number: "ECON 144",
                         quarter: "Winter 2022",
                         description: ["Modeling and forecasting trend, seasonality, and cycles of time-series data", "Stochastic trends; measures of volatility", "Data analysis and modeling in R"],
-                        link: "/files/Econ_144_Project_3.pdf"
+                        links: [
+                            {"link": "/files/Econ_144_Project_1.pdf", "title": "Project 1"},
+                            {"link": "/files/Econ_144_Project_2.pdf", "title": "Project 2"},
+                            {"link": "/files/Econ_144_Project_3.pdf", "title": "Project 3"}
+                        ]
                     },
                     {
                         title: "Computational Financial Engineering",
@@ -301,7 +342,9 @@
                         number: "ECON 187",
                         quarter: "Spring 2022",
                         description: ["Methods of causal inference in econometrics - panel data, instrumental variables, differences in differences, regression discontinuity, synthetic control", "Research design; econometric methodology", "Directed research project, including data analysis in Python"],
-                        link: "/files/Economics_187_Final_Paper.pdf"
+                        links: [
+                            {"link": "/files/Economics_187_Final_Paper.pdf", "title": "Final Paper"}
+                        ]
                     },
                     {
                         title: "Pricing and Strategy",
