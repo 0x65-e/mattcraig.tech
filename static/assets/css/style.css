@@ -83,6 +83,10 @@ a {
 	text-decoration-style: dotted;
 }
 
+.no-decoration {
+	text-decoration: none;
+}
+
 .content {
 	width: 60%;
 	margin: auto;
