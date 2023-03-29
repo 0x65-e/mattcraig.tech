@@ -4,7 +4,7 @@ param (
 	[String]$OutFile = "kv-bulk.json",
 	[String]$Base = ".\static\",
 	[switch]$SkipBinary,
-	[int]$LimitSize = 1
+	[int]$LimitSize = 100
 )
 $BaseDir = (Get-Item -Path $Base)
 
@@ -29,7 +29,7 @@ foreach ($File in Get-ChildItem -File -Recurse -Path $BaseDir) {
 	# This will fail if the file is empty
 	if ($File.length) {
 		if (($LimitSize -ne 0) -and (($File.length / 1MB) -gt $LimitSize)) {
-			Write-Warning "Skipping large file."
+			Write-Warning "Skipping large file: size $($File.length / 1MB)MB greater than limit $($LimitSize)MB."
 			continue
 		}
 		if ($IsBinary) {
@@ -38,7 +38,7 @@ foreach ($File in Get-ChildItem -File -Recurse -Path $BaseDir) {
 			} else {
 				Write-Host "Binary data file. Uploading in bulk."
 				Add-Content -Path $OutFile -Value "`t{`n`t`t`"key`": `"$SubPath`","
-				$EncodedContents = [convert]::ToBase64String((Get-Content -Path $File.FullName -AsByteStream))
+				$EncodedContents = [convert]::ToBase64String((Get-Content -Path $File.FullName -Raw -AsByteStream))
 				Add-Content -Path $OutFile -Value "`t`t`"value`": `"$EncodedContents`",`n`t`t`"base64`": true`n`t},"
 			}
 		} else {
