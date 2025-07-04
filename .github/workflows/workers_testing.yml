@@ -11,11 +11,11 @@ jobs:
     name: Checkout, Build, and Publish Test Worker
     steps:
       - name: Check out repository code
-        uses: actions/checkout@v3
-      - name: Set up Node v16
-        uses: actions/setup-node@v3
+        uses: actions/checkout@v4
+      - name: Set up Node v20
+        uses: actions/setup-node@v4
         with:
-          node-version: 16
+          node-version: 20
       - name: Set up Rust toolchain
         uses: actions-rs/toolchain@v1
         with:
